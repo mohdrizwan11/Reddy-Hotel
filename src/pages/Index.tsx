@@ -1,7 +1,9 @@
-import { Phone, Mail, MapPin, MessageCircle } from "lucide-react";
+import { Phone, Mail, MapPin, MessageCircle, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FadeInOnScroll } from "@/components/FadeInOnScroll";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useState } from "react";
 import logo from "@/assets/reddy-hotel-logo.jpeg";
 import chickenRiceImg from "@/assets/chicken-rice.jpg";
 import eggRiceImg from "@/assets/egg-rice.jpg";
@@ -33,21 +35,21 @@ type MenuItem = { name: string; price: string; image: string };
 
 const menuSections: { category: string; emoji: string; items: MenuItem[] }[] = [
   {
-    category: "Rice Dishes",
-    emoji: "🍚",
-    items: [
-      { name: "Chicken Rice", price: "110", image: chickenRiceImg },
-      { name: "Egg Rice", price: "60", image: eggRiceImg },
-      { name: "Double Egg Rice", price: "70", image: doubleEggRiceImg },
-      { name: "Gobi Rice", price: "60", image: gobiRiceImg },
-    ],
-  },
-  {
     category: "Starters",
     emoji: "🍗",
     items: [
       { name: "Chicken Kabab (per kg)", price: "350", image: chickenKababImg },
       { name: "Chicken Kabab (half kg)", price: "180", image: chickenKababImg },
+    ],
+  },
+  {
+    category: "Fried Rice",
+    emoji: "🍚",
+    items: [
+      { name: "Chicken Fried Rice", price: "110", image: chickenRiceImg },
+      { name: "Egg Fried Rice", price: "60", image: eggRiceImg },
+      { name: "Double Egg Fried Rice", price: "70", image: doubleEggRiceImg },
+      { name: "Gobi Fried Rice", price: "60", image: gobiRiceImg },
     ],
   },
   {
@@ -137,6 +139,8 @@ const CategorySection = ({
 );
 
 const Index = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-background scroll-smooth page-bg">
       {/* Navbar */}
@@ -148,7 +152,8 @@ const Index = () => {
               Reddy Hotel
             </span>
           </a>
-          <div className="flex gap-3 sm:gap-5 text-sm">
+          <div className="flex gap-3 sm:gap-5 text-sm items-center">
+            {/* Desktop Menu Links */}
             {menuSections.map((s) => (
               <a
                 key={s.category}
@@ -158,9 +163,41 @@ const Index = () => {
                 {s.category}
               </a>
             ))}
-            <a href="#menu" className="text-muted-foreground hover:text-primary transition-colors sm:hidden">
-              Menu
-            </a>
+            
+            {/* Mobile Collapsible Menu */}
+            <div className="sm:hidden">
+              <Collapsible open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+                <CollapsibleTrigger asChild>
+                  <button className="flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors">
+                    Menu
+                    <ChevronDown 
+                      className={`h-3 w-3 transition-transform duration-200 ${
+                        isMenuOpen ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="absolute right-4 top-16 bg-background border border-border rounded-lg shadow-lg p-2 min-w-[150px]">
+                  <div className="flex flex-col gap-1">
+                    {[
+                      { name: 'Starters', id: 'starters' },
+                      { name: 'Fried Rice', id: 'fried-rice' },
+                      { name: 'Noodles', id: 'noodles' }
+                    ].map((item) => (
+                      <a
+                        key={item.id}
+                        href={`#${item.id}`}
+                        onClick={() => setIsMenuOpen(false)}
+                        className="px-3 py-2 rounded hover:bg-primary/10 transition-all text-foreground text-sm"
+                      >
+                        {item.name}
+                      </a>
+                    ))}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            </div>
+            
             <a href="#contact" className="text-muted-foreground hover:text-primary transition-colors">
               Contact
             </a>
@@ -188,7 +225,7 @@ const Index = () => {
               Delicious food, Served with love
             </p>
             <div className="flex flex-wrap gap-2 justify-center animate-fade-up stagger-2">
-              {["Chicken Rice", "Chicken Kabab", "Egg Noodles", "Gobi Rice"].map((item) => (
+              {["Chicken Fried Rice", "Chicken Kabab", "Egg Noodles", "Gobi Fried Rice"].map((item) => (
                 <span
                   key={item}
                   className="px-3 py-1 rounded-full bg-card/80 border border-border text-sm text-foreground"
@@ -197,15 +234,45 @@ const Index = () => {
                 </span>
               ))}
             </div>
-            <div className="mt-6 animate-fade-up stagger-2">
+            <div className="mt-6 animate-fade-up stagger-2 flex flex-col items-center gap-3">
               <Badge className="bg-primary text-primary-foreground text-sm px-4 py-1.5">
-                🚀 Fresh Cooking + Fast Delivery
+                 Fresh Cooking + Fast Delivery
+              </Badge>
+              <Badge className="bg-green-600 text-white text-sm px-4 py-1.5 border-0">
+                 🚚 Delivery available on orders ₹200 or above
               </Badge>
             </div>
             <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center animate-fade-up stagger-3">
-              <Button size="lg" asChild>
-                <a href="#rice-dishes">View Menu</a>
-              </Button>
+              <Collapsible open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+                <CollapsibleTrigger asChild>
+                  <Button size="lg" className="gap-2">
+                    View Menu
+                    <ChevronDown 
+                      className={`h-4 w-4 transition-transform duration-200 ${
+                        isMenuOpen ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="mt-3">
+                  <div className="flex flex-col gap-2 max-w-xs mx-auto">
+                    {[
+                      { name: 'Starters', id: 'starters' },
+                      { name: 'Fried Rice', id: 'fried-rice' },
+                      { name: 'Noodles', id: 'noodles' }
+                    ].map((item) => (
+                      <a
+                        key={item.id}
+                        href={`#${item.id}`}
+                        onClick={() => setIsMenuOpen(false)}
+                        className="px-4 py-2 rounded-lg bg-card border border-border hover:bg-primary/10 hover:border-primary/40 transition-all text-center font-medium text-foreground"
+                      >
+                        {item.name}
+                      </a>
+                    ))}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
               <Button
                 size="lg"
                 className="bg-accent text-accent-foreground hover:bg-accent/90 gap-2"
@@ -303,7 +370,7 @@ const Index = () => {
           Thank you for choosing Reddy Hotel!
         </p>
         <div className="flex gap-4 justify-center text-sm opacity-80">
-          <a href="#rice-dishes" className="hover:opacity-100 transition-opacity">Menu</a>
+          <a href="#starters" className="hover:opacity-100 transition-opacity">Menu</a>
           <a href="#contact" className="hover:opacity-100 transition-opacity">Contact</a>
         </div>
       </footer>
