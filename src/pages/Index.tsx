@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { FadeInOnScroll } from "@/components/FadeInOnScroll";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useState } from "react";
-import logo from "@/assets/reddy-hotel-logo.jpeg";
+import logo from "@/assets/reddy hotel logo-1.jpeg";
 import chickenRiceImg from "@/assets/chicken-rice.jpg";
 import eggRiceImg from "@/assets/egg-rice.jpg";
 import doubleEggRiceImg from "@/assets/double-egg-rice.jpg";
